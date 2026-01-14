@@ -1,0 +1,83 @@
+
+package de.hska.iwi.ads.solution.tree;
+
+import de.hska.iwi.ads.dictionary.AbstractBinaryTree;
+import java.util.AbstractMap;
+import java.util.Map;
+
+/**
+ * Binärer Suchbaum ohne Löschen.
+ */
+public class BinarySearchTree<K extends Comparable<K>, V> extends AbstractBinaryTree<K, V> {
+
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public V get(Object o) {
+        if (o == null) {
+            return null;
+        }
+
+        // Prüfen, ob der Typ kompatibel ist
+        if (root != null && !root.entry.getKey().getClass().isInstance(o)) {
+            return null; // falscher Typ
+        }
+
+        K key = (K) o; // sicherer Cast nach Prüfung
+        Node current = root;
+
+        while (current != null) {
+            int cmp = key.compareTo(current.entry.getKey());
+            if (cmp == 0) {
+                return current.entry.getValue();
+            } else if (cmp < 0) {
+                current = current.left;
+            } else {
+                current = current.right;
+            }
+        }
+        return null;
+    }
+
+
+    @Override
+    public V put(K key, V value) {
+        if (key == null) {
+            throw new NullPointerException("Key darf nicht null sein");
+        }
+
+        if (root == null) {
+            root = new Node(key, value);
+            // root = new Node(new AbstractMap.SimpleEntry<>(key, value));
+            return null;
+        }
+
+        Node current = root;
+        Node parent = null;
+
+        while (current != null) {
+            parent = current;
+            int cmp = key.compareTo(current.entry.getKey());
+            if (cmp == 0) {
+                V oldValue = current.entry.getValue();
+                current.entry.setValue(value);
+                return oldValue;
+            } else if (cmp < 0) {
+                current = current.left;
+            } else {
+                current = current.right;
+            }
+        }
+
+        //Node newNode = new Node(new AbstractMap.SimpleEntry<>(key, value));
+        Node newNode = new Node(key, value);
+        int cmp = key.compareTo(parent.entry.getKey());
+        if (cmp < 0) {
+            parent.left = newNode;
+        } else {
+            parent.right = newNode;
+        }
+
+        return null;
+    }
+}

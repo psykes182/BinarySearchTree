@@ -1,0 +1,108 @@
+
+package de.hska.iwi.ads.solution.tree;
+
+import org.junit.jupiter.api.Test;
+
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * Tests für BinarySearchTree (ohne Löschen).
+ */
+public class BinarySearchTreeTest {
+
+    private Map<Integer, String> newTree() {
+        return new BinarySearchTree<>();
+    }
+
+    // -------- GET-Tests --------
+    @Test
+    void get_onEmpty_returnsNull() {
+        Map<Integer, String> tree = newTree();
+        assertNull(tree.get(1), "Leerer Baum muss null zurückgeben");
+    }
+
+    @Test
+    void get_existingKey_returnsValue() {
+        Map<Integer, String> tree = newTree();
+        tree.put(10, "zehn");
+        assertEquals("zehn", tree.get(10));
+    }
+
+    @Test
+    void get_nonExistingKey_returnsNull() {
+        Map<Integer, String> tree = newTree();
+        tree.put(5, "fünf");
+        assertNull(tree.get(99));
+    }
+
+    // -------- PUT-Tests --------
+    @Test
+    void put_firstInsert_returnsNull() {
+        Map<Integer, String> tree = newTree();
+        assertNull(tree.put(1, "eins"));
+    }
+
+    @Test
+    void put_overwritesExistingKey_returnsOldValue() {
+        Map<Integer, String> tree = newTree();
+        tree.put(1, "eins");
+        String old = tree.put(1, "eins-neu");
+        assertEquals("eins", old);
+        assertEquals("eins-neu", tree.get(1));
+    }
+
+    @Test
+    void put_multipleKeys_insertsAll() {
+        Map<Integer, String> tree = newTree();
+        tree.put(10, "zehn");
+        tree.put(5, "fünf");
+        tree.put(15, "fünfzehn");
+        assertEquals("zehn", tree.get(10));
+        assertEquals("fünf", tree.get(5));
+        assertEquals("fünfzehn", tree.get(15));
+    }
+
+    // -------- Struktur-Tests --------
+    @Test
+    void put_smallerKey_goesLeft() {
+        BinarySearchTree<Integer, String> tree = new BinarySearchTree<>();
+        tree.put(10, "zehn");
+        tree.put(5, "fünf");
+        assertEquals("fünf", tree.get(5));
+    }
+
+    @Test
+    void put_largerKey_goesRight() {
+        BinarySearchTree<Integer, String> tree = new BinarySearchTree<>();
+        tree.put(10, "zehn");
+        tree.put(20, "zwanzig");
+        assertEquals("zwanzig", tree.get(20));
+    }
+
+    // -------- Sonderfälle --------
+    @Test
+    void get_null_returnsNull() {
+        Map<Integer, String> tree = newTree();
+        tree.put(1, "eins");
+        assertNull(tree.get(null));
+    }
+
+    @Test
+    void get_wrongType_returnsNull() {
+        Map<Integer, String> tree = newTree();
+        tree.put(1, "eins");
+        assertNull(tree.get("kein Integer"));
+    }
+
+    @Test
+    void put_and_get_negativeKeys_workCorrectly() {
+        Map<Integer, String> tree = newTree();
+        tree.put(-5, "minus fünf");
+        tree.put(-10, "minus zehn");
+        assertEquals("minus fünf", tree.get(-5));
+        assertEquals("minus zehn", tree.get(-10));
+    }
+}
+
